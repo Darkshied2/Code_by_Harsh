@@ -1,0 +1,33 @@
+# bruthforce approach(O(n^2))
+
+
+# class Solution:
+    # def shortestSubarray(self, nums: List[int], k: int) -> int:
+    #     st=[]
+    #     for i in range(len(nums)):
+    #         for j in range(i,len(nums)):
+    #             if sum(nums[i:j+1])>=k:
+    #                 st.append(len(nums[i:j+1]))
+    #     if len(st)>0:
+    #         return min(st)
+    #     return -1
+
+    # optimised solution
+
+from collections import deque
+class Solution:
+    def shortestSubarray(self, nums: List[int], k: int) -> int:
+        cumm_sum = [0]
+        for num in nums:
+            cumm_sum.append(cumm_sum[-1] + num)
+        dq = deque()
+        result = float('inf')
+
+        for i in range(len(cumm_sum)):
+            while dq and cumm_sum[i] - cumm_sum[dq[0]] >= k:
+                result = min(result, i - dq.popleft())
+            while dq and cumm_sum[i] <= cumm_sum[dq[-1]]:
+                dq.pop()
+            
+            dq.append(i)
+        return result if result != float('inf') else -1
